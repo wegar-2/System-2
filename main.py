@@ -24,7 +24,26 @@ import os
 # 1. It is assumed that MySQL DB, version 5.5 is installed on the user system
 # If it is not, install it
 
-# 2.
+# 2. Set the System2_app_dir below;
+# The structure of the directory is expected to be the following:
+#    ==>   System2_app_dir
+#          ==>  System-2 (the downloaded repo...)
+#               ==> ...
+#               ==> main.py
+#               ==> ...
+#          ==>  financial_data
+#               ==> d_world_txt.zip
+#               ==> d_us_txt.zip
+#               ==> d_jp_txt.zip
+#               ==> d_hk_txt.zip
+#               ==> d_de_txt.zip
+#               ==> d_macro_txt.zip
+#
+# Link to the data historical DBs on Stooq.pl: https://stooq.pl/db/h/
+#
+
+# 3.
+
 
 
 
@@ -32,16 +51,20 @@ import os
 #########################   III. SCRIPTS EXECUTION    ##########################
 ################################################################################
 if __name__ == "__main__":
-    print("###########################")
-    print("###########################")
-    print("Executing main.py script...")
-    print("###########################")
-    print("###########################")
-    print("__file__ = ",__file__)
-    print("######################################################################")
-    print("######################################################################")
-    print("Current directory: ", os.getcwd())
-    print("######################################################################")
-    print("######################################################################")
+    print("######################################################")
+    print("######################################################")
+    print("########### Executing main.py script... ##############")
+    print("######################################################")
+    print("######################################################")
+    print("######################################################")
+    print("\n")
+    print("__file__ = ", __file__)
+    print("\n")
+    print("####################################################################")
+    print("####################################################################")
+    print("##### Current directory: ", os.getcwd())
+    print("####################################################################")
+    print("####################################################################")
     # 1. Preprocessing of the downloaded data
-    # os.system('python3 ')
+    # os.system('python3 Stooq_data_preprocessing.py')
+    # 2.
