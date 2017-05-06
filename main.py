@@ -42,7 +42,8 @@ import os
 # Link to the data historical DBs on Stooq.pl: https://stooq.pl/db/h/
 #
 
-# 3.
+# 3. Execute the script "prepare_MySQL_Server.sql" using the command:
+#   
 
 
 
@@ -67,5 +68,12 @@ if __name__ == "__main__":
     print("####################################################################")
     # 1. Preprocessing of the downloaded data
     os.system('python3 Stooq_data_preprocessing.py')
+    print("####################################################################")
+    print("####################################################################")
+    print("Back to main.py script...")
+    print("Quick check of current directory - os.getcwd(): ", os.getcwd())
+    print("Moving on to data load into MySQL server...")
+    print("####################################################################")
+    print("####################################################################")
     # 2. Data load into MySQL Server
     os.system('python3 load_data_to_MySQL.py')

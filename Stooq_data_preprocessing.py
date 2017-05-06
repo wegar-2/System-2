@@ -5,11 +5,17 @@
 import os
 import sys
 import pandas as pd
+import time
 
 ################################################################################
 ############## 0. Prepare the stage for the data unpacking  ####################
 ################################################################################
-
+print("#######################################################################")
+print("#### Countdown to start of Stooq_data_processing.py execution... ######")
+print("#######################################################################")
+for secs_left in range(10,0,-1):
+    print("Seconds to start: ", secs_left)
+    time.sleep(1)
 print("##########################################")
 print("##########################################")
 print("Executing Stooq_data_preprocessing.py ....")
@@ -84,6 +90,8 @@ if False in archives_presence.values():
     print("Script execution stopped!!!")
     sys.exit()
 
+time.sleep(5)
+
 ################################################################################
 ############## 1. Unpack the data sets in an orderly manner  ###################
 ################################################################################
@@ -99,27 +107,17 @@ print("\n\n")
 
 # define function that awaits for user
 # acceptance before loading the next data set
-def wait_for_user_approval_to_continue_unzip(file_to_unzip):
-    print("File waiting to be unzipped: ", file_to_unzip)
-    print("\tY to proceed.")
-    print("\tN to break.")
-    while True:
-        user_input = input("Y/N: ")
-        if user_input in ("Y", "N"):
-            break
-        else:
-            print("Please, try again...")
-            continue
-    if user_input == "Y":
-        pass
-    else:
-        sys.exit()
 
 for archive_name in expected_archives_list:
-    wait_for_user_approval_to_continue_unzip(archive_name)
     print("Unpacking archive: ", archive_name)
+    time.sleep(3)
     unpack_command = 'unzip ' + archive_name
     os.system(unpack_command)
+
+print("Unzipping finished; additional data adjustments under way...")
+for secs_left in range(5,0,-1):
+    print("Moving on in ", secs_left, " seconds...")
+    time.sleep(1)
 
 # 1.2. Do the renaming of the directories inside the unpacked data
 print("Current directory...")
@@ -184,6 +182,12 @@ for iter_counter, iter_key in enumerate(world_old_new_names_dict.keys()):
 ################## 2. Prepare the data dictionaries ############################
 ################################################################################
 
+print("###########################################################")
+print("######## Data dictionaries preparation starts in... #######")
+print("###########################################################")
+for secs_left in range(10,0,-1):
+    print(secs_left, " second(s)...")
+    time.sleep(1)
 
 ### 2.0. Load function(s) and do some preparatory stuff
 
@@ -263,7 +267,6 @@ for key_iter in world_categories_dict_url.keys():
 
 # dictionary of dictionaries
 world_dict_of_dicts = dict(zip(world_categories, world_list_of_dictionaries))
-
 
 # save data dictionaries to /financial_data/Stooq_data_dictionaries/world directory
 data_dicts_dir = os.getcwd() + "/Stooq_data_dictionaries/world/"
