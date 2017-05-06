@@ -42,8 +42,8 @@ import os
 # Link to the data historical DBs on Stooq.pl: https://stooq.pl/db/h/
 #
 
-# 3. Execute the script "prepare_MySQL_Server.sql" using the command:
-#   
+# 3. Execute the script "prepare_MySQL_Server" using the command:
+# ...$ ./prepare_MySQL_Server
 
 
 

@@ -1,0 +1,27 @@
+#############################################################
+###### MySQL Server - preparation of user and databases #####
+#############################################################
+#!/bin/bash
+#
+MYSQL=`which mysql`
+
+Qsdb="use mysql;"
+Q0="create user 'fin_db_user'@'localhost' identified by 'test1234';"
+Q1="create database if not exists hk_fin_db;"
+Q2="create database if not exists macro_fin_db;"
+Q3="create database if not exists us_fin_db;"
+Q4="create database if not exists jp_fin_db;"
+Q5="create database if not exists pl_fin_db;"
+Q6="create database if not exists de_fin_db;"
+Q7="grant all privileges on hk_fin_db to 'fin_db_client'@'localhost';"
+Q8="grant all privileges on macro_fin_db to 'fin_db_client'@'localhost';"
+Q9="grant all privileges on us_fin_db to 'fin_db_client'@'localhost';"
+Q10="grant all privileges on jp_fin_db to 'fin_db_client'@'localhost';"
+Q11="grant all privileges on pl_fin_db to 'fin_db_client'@'localhost';"
+Q12="grant all privileges on de_fin_db to 'fin_db_client'@'localhost';"
+Q13="grant all privileges on world_fin_db to 'fin_db_client'@'localhost';"
+Q14="flush privileges;"
+
+SQL1="${Qsdb}${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}${Q10}${Q11}${Q12}${Q13}${Q14}"
+
+$MYSQL -uroot -p -e "$SQL1"
