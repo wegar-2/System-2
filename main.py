@@ -66,5 +66,6 @@ if __name__ == "__main__":
     print("####################################################################")
     print("####################################################################")
     # 1. Preprocessing of the downloaded data
-    # os.system('python3 Stooq_data_preprocessing.py')
-    # 2.
+    os.system('python3 Stooq_data_preprocessing.py')
+    # 2. Data load into MySQL Server
+    os.system('python3 load_data_to_MySQL.py')
