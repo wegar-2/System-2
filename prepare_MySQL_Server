@@ -5,23 +5,34 @@
 #
 MYSQL=`which mysql`
 
-Qsdb="use mysql;"
-Q0="create user 'fin_db_user'@'localhost' identified by 'test1234';"
-Q1="create database if not exists hk_fin_db;"
-Q2="create database if not exists macro_fin_db;"
-Q3="create database if not exists us_fin_db;"
-Q4="create database if not exists jp_fin_db;"
-Q5="create database if not exists pl_fin_db;"
-Q6="create database if not exists de_fin_db;"
-Q7="grant all privileges on hk_fin_db to 'fin_db_client'@'localhost';"
-Q8="grant all privileges on macro_fin_db to 'fin_db_client'@'localhost';"
-Q9="grant all privileges on us_fin_db to 'fin_db_client'@'localhost';"
-Q10="grant all privileges on jp_fin_db to 'fin_db_client'@'localhost';"
-Q11="grant all privileges on pl_fin_db to 'fin_db_client'@'localhost';"
-Q12="grant all privileges on de_fin_db to 'fin_db_client'@'localhost';"
-Q13="grant all privileges on world_fin_db to 'fin_db_client'@'localhost';"
-Q14="flush privileges;"
+Q0="use mysql;"
 
-SQL1="${Qsdb}${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}${Q10}${Q11}${Q12}${Q13}${Q14}"
+# create a client user
+Q1="create user 'fin_db_client'@'localhost' identified by 'test1234';"
 
+# create databases in which the data will be stored
+Q2="create database if not exists hk_fin_db;"
+Q3="create database if not exists macro_fin_db;"
+Q4="create database if not exists us_fin_db;"
+Q5="create database if not exists jp_fin_db;"
+Q6="create database if not exists pl_fin_db;"
+Q7="create database if not exists de_fin_db;"
+Q8="create database if not exists world_fin_db;"
+Q9="create database if not exists app_users_db;"
+
+# grant access privileges to the user on the databases
+Q10="grant all privileges on hk_fin_db to 'fin_db_client'@'localhost';"
+Q11="grant all privileges on macro_fin_db to 'fin_db_client'@'localhost';"
+Q12="grant all privileges on us_fin_db to 'fin_db_client'@'localhost';"
+Q13="grant all privileges on jp_fin_db to 'fin_db_client'@'localhost';"
+Q14="grant all privileges on pl_fin_db to 'fin_db_client'@'localhost';"
+Q15="grant all privileges on de_fin_db to 'fin_db_client'@'localhost';"
+Q16="grant all privileges on world_fin_db to 'fin_db_client'@'localhost';"
+Q17="grant all privileges on app_users_db to 'fin_db_client'@'localhost';"
+Q18="flush privileges;"
+
+# make the query
+SQL1="${Q0}${Q1}${Q2}${Q3}${Q4}${Q5}${Q6}${Q7}${Q8}${Q9}${Q10}${Q11}${Q12}${Q13}${Q14}${Q15}${Q16}${Q17}${Q18}"
+
+# execute the query
 $MYSQL -uroot -p -e "$SQL1"

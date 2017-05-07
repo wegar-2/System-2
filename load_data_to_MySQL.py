@@ -44,101 +44,58 @@ print("Main directory with the resources successfully reached!")
 
 
 ### 0. Test connection to the database
+cnx_params = {
+    "user": "fin_db_user",
+    "password": "test1234",
+    "host": "127.0.0.1",
+    "database": "pl_fin_db"
+}
+test_cnx = mysql.connector.connect(
+        user="fin_db_user",
+        password="test1234",
+        host="127.0.0.1",
+        database="pl_fin_db"
+)
+test_cnx.close()
 
 ### 1. Loading data dictionaries to the database
 
 ### 2. Loading the data to the database
 
 
-# ######################
-# # 1. load dictionaries
-# # 1.1. setup directory to the tickers dictionaries
-# tickers_dict_dir = data_root_dir + "tickers_dict_world/world"
-# # 1.2. load the elements of the directory with dictionaries
-# dictionaries_files = glob.glob(tickers_dict_dir+"*")
-# # 1.3. display info on dictionary files that have been found
-# print("\n\n\n")
-# print("Located dictionaries of ticker symbols: ")
-# for k in range(len(dictionaries_files)):
-#     print("Dictionary number ", str(k+1), ":\t\t", dictionaries_files[k])
-#
-#
-#
-# # 1.4. loop through the elements in the dictionary and load them
-# # 1.4.1. function to load the two columns from dictionaries
-# def load_tickers_dictionary(temp_dir):
-#     temp_file = open(temp_dir, 'r')
-#     temp_file_contents = temp_file.readlines()
-#     temp_file.close()
-#     # create an empty DataFrame with contents
-#     df_out = pd.DataFrame(index=list(range(len(temp_file_contents) - 1)),
-#                           columns=['Symbol', 'Name'])
-#     # fill in the DataFrame with the dictionary content
-#     for k in range(len(temp_file_contents)):
-#         if k == 0:
-#             pass
-#         else:
-#             temp_file_contents[k] = temp_file_contents[k].rstrip("\n")
-#             temp_symbol = temp_file_contents[k][0:(temp_file_contents[k].find(" "))]
-#             temp_name = temp_file_contents[k][temp_file_contents[k].find(" "):].strip()
-#             # remove special character from the string temp_name
-#             temp_name = re.sub(r'([^\s\w]|_)+', '', temp_name)
-#             # save the transformations result into the DataFrame
-#             df_out.loc[k - 1, 'Symbol'] = temp_symbol
-#             df_out.loc[k - 1, 'Name'] = temp_name
-#     return df_out
-# # 1.4.2. loading the two dictionaries into DataFrames
-# dict_of_tickers_dicts = {}
-# for k in range(len(dictionaries_files)):
-#     print(dictionaries_files[k])
-#     temp_file = dictionaries_files[k]
-#     df_temp = load_tickers_dictionary(temp_file)
-#     name_temp = temp_file[temp_file.rfind("/")+1:(len(str(temp_file))-4)]
-#     dict_of_tickers_dicts[name_temp] = df_temp
-#
-# print("####################")
-# print("####################")
-# print("Loaded dictionaries:")
-# print("####################")
-# print("\n\n")
-#
-# for el in dict_of_tickers_dicts.keys():
-#     print("\n\n\n")
-#     print("Dictionary name: ", str(el))
-#     print("Content of the dictionary: ")
-#     print(dict_of_tickers_dicts[el])
-#
-# # 1.5. Load the dictionaries into the MySQL DB
-#
-# # 1.5.1. loop through the dictionary of tickers dictionaries and create
-# # tables for them in the DB
-#
-# # 1.5.1.1. prepare commands
-# dict_of_queries = {}
-# for my_iter in dict_of_tickers_dicts.keys():
-#     temp_query = (
-#         "CREATE TABLE " + str(my_iter) + " ("
-#         "   Symbol      varchar(40)     NOT NULL,     "
-#         "   Name        varchar(40)     NOT NULL     "
-#         ") ENGINE=InnoDB")
-#     # save the query in dictionary
-#     dict_of_queries[my_iter] = temp_query
-# # 1.5.1.2. execute commands
-# for my_iter in dict_of_tickers_dicts.keys():
-#     temp_query = dict_of_queries[my_iter]
-#     cnx1 = mysql.connector.connect(user="wegar", password="test1234",
-#                               host="127.0.0.1",
-#                               database="financial_mdb")
-#     # create a cursor to be able to execute commands
-#     cursor1 = cnx1.cursor()
-#     # print information on the command that it executed
-#     print("Executing: ", temp_query)
-#     # execute command
-#     cursor1.execute(temp_query)
-#     # close the cursor
-#     cursor1.close()
-#     # close the connection
-#     cnx1.close()
+
+
+# 1.5. Load the dictionaries into the MySQL DB
+
+# 1.5.1. loop through the dictionary of tickers dictionaries and create
+# tables for them in the DB
+
+# 1.5.1.1. prepare commands
+dict_of_queries = {}
+for my_iter in dict_of_tickers_dicts.keys():
+    temp_query = (
+        "CREATE TABLE " + str(my_iter) + " ("
+        "   Symbol      varchar(40)     NOT NULL,     "
+        "   Name        varchar(40)     NOT NULL     "
+        ") ENGINE=InnoDB")
+    # save the query in dictionary
+    dict_of_queries[my_iter] = temp_query
+# 1.5.1.2. execute commands
+for my_iter in dict_of_tickers_dicts.keys():
+    temp_query = dict_of_queries[my_iter]
+    cnx1 = mysql.connector.connect(user="wegar", password="test1234",
+                              host="127.0.0.1",
+                              database="financial_mdb")
+    # create a cursor to be able to execute commands
+    cursor1 = cnx1.cursor()
+    # print information on the command that it executed
+    print("Executing: ", temp_query)
+    # execute command
+    cursor1.execute(temp_query)
+    # close the cursor
+    cursor1.close()
+    # close the connection
+    cnx1.close()
 #
 # # 1.5.2. loop through the dictionaries of tickers dictionaries and
 # # load them into the previously prepared tables in DB
