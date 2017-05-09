@@ -1,2 +1,6 @@
 # ignore directory .idea <-- project folder created by PyCharm
 .idea/
+# ignore script clear_MySQL_Server which is used for testing of the DBs setup
+clear_MySQL_Server
+# ignore swap file
+*.swp
