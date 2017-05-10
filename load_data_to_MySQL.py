@@ -81,7 +81,7 @@ else:
 # 1.1. function to create tables in the MySQL Server
 def create_table_mysql_server(table_name, database_name,
                               table_columns_dict, connection_dictionary):
-    print("Inside function create_table_mysql_server...")
+    # print("Inside function create_table_mysql_server...")
     print("Creating table ", table_name, " in the database ", database_name,"...")
     # 1. open connection with database
     temp_cnx = mysql.connector.connect(**connection_dictionary)
@@ -102,14 +102,14 @@ def create_table_mysql_server(table_name, database_name,
         temp_command = temp_command + string_to_append
     temp_command = temp_command + ");"
     # 4. execute the command
-    print("Executing command: ")
-    print(temp_command)
+    # print("Executing command: ")
+    # print(temp_command)
     temp_cursor.execute(temp_command)
     # 5.close cursor and terminate connection
     temp_cursor.close()
     temp_cnx.close()
-    print("Leaving function create_table_mysql_server()...")
-    print("\n")
+    # print("Leaving function create_table_mysql_server()...")
+    # print("\n")
 
 
 # 1.2. function to load DataFrames to the indicated table at MySQL server
@@ -162,7 +162,7 @@ table_name_in = "tse_stocks"
 create_table_mysql_server(table_name_in, database_name_in,
                           table_columns_dict_in, connection_dict_in)
 # 2.4. 'pl'
-# 2.4.1. wse_stoks
+# 2.4.1. wse_stocks
 table_name_in = "wse_stocks"
 create_table_mysql_server(table_name_in, database_name_in,
                           table_columns_dict_in, connection_dict_in)
@@ -209,7 +209,7 @@ table_name_in = "money_market"
 create_table_mysql_server(table_name_in, database_name_in,
                           table_columns_dict_in, connection_dict_in)
 # 2.6.8. stooq_stock_indices
-table_name_in = "stooq_stock_indices"
+table_name_in = "stooq_stocks_indices"
 create_table_mysql_server(table_name_in, database_name_in,
                           table_columns_dict_in, connection_dict_in)
 
@@ -224,12 +224,256 @@ print("\n")
 ##################### 3. Creating tables for the data itself ###################
 ################################################################################
 ################################################################################
+print("os.getcwd(): ", os.getcwd())
+print("\n\n")
+print("Contents of the current directory: ")
+for iter_count, iter_value in enumerate(os.listdir(os.getcwd())):
+    print(str(iter_count+1), ": ", iter_value)
+print("\n\n")
+
+# moving into directory with data dictionaries
+os.chdir(os.getcwd()+"/Stooq_data_dictionaries")
+
+# os.chdir("/home/wegar/github_repos/financial_data")
+# print(os.getcwd())
+
+# new set of columns for tables with the times series
+table_columns_dict_in = {
+    "Date": "date",
+    "Close": "float(14,4)"
+}
+
+# wrapper function that creates tables
+
+
+def create_data_tables_in_mysql_server(region_name, category_name,
+                                       database_name_in, connection_dict_in):
+    # a) display info
+    print("\n\n")
+    print("Inside create_data_tables_in_mysql_server() function...")
+    print("\t\tRegion: ", region_name)
+    print("\t\tCategory: ", category_name)
+    # b) getting list of tables names
+    temp_path = os.getcwd() + "/" + region_name + "/" + category_name + ".csv"
+    df_tables_names = pd.read_csv(temp_path)
+    temp_symbols_list = [str(el) for el in
+                         pd.Series(df_tables_names.loc[:, 'Symbol'])]
+    # changing "." ===> "_" in the list of symbols
+    temp_symbols_list = [el.replace(".", "_") for el in temp_symbols_list]
+    # changing "^" ===> "hat_" in the list of symbols
+    temp_symbols_list = [el.replace("^", "hat_") for el in temp_symbols_list]
+    # changing "-" ===> "_dash_" in the list of symbols
+    temp_symbols_list = [el.replace("-", "hat_") for el in temp_symbols_list]
+    # c) display list of symbols\
+    print("\n\n")
+    print("List of symbols for region: ", region_name,
+          ", category: ", category_name)
+    for iter_count, iter_symbol in enumerate(temp_symbols_list):
+        print(str(iter_count+1), ": ", iter_symbol)
+    # d) create tables
+    for iter_symbol in temp_symbols_list:
+        create_table_mysql_server(iter_symbol, database_name_in,
+                                  table_columns_dict_in, connection_dict_in)
+
 # 3.1. 'de'
+# 3.1.1. xetra_stocks
+region_name = "de"
+database_name_in = "de_fin_db"
+print("Creating tables for region: ", region_name, "; 1/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+    time.sleep(1)
+category_name = "xetra_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 # 3.2. 'hk'
+# 3.2.1. hkex_stocks
+region_name = "hk"
+database_name_in = "hk_fin_db"
+print("Creating tables for region: ", region_name, "; 2/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+    time.sleep(1)
+category_name = "hkex_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 # 3.3. 'jp'
+# 3.3.1. tse_futures
+region_name = "jp"
+database_name_in = "jp_fin_db"
+print("Creating tables for region: ", region_name, "; 3/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+    time.sleep(1)
+category_name = "tse_futures"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.3.2. tse_indices
+category_name = "tse_indices"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.3.3. tse_stocks
+category_name = "tse_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 # 3.4. 'pl'
+# 3.4.1. wse_stocks
+region_name = "pl"
+database_name_in = "pl_fin_db"
+print("Creating tables for region: ", region_name, "; 4/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+category_name = "wse_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 # 3.5. 'us'
+# 3.5.1. nasdaq_stocks
+region_name = "us"
+database_name_in = "us_fin_db"
+print("Creating tables for region: ", region_name, "; 5/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+    time.sleep(1)
+category_name = "nasdaq_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.5.2. nyse_stocks
+category_name = "nyse_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.5.3. nysemkt_stocks
+category_name = "nysemkt_stocks"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 # 3.6.  'world'
+# 3.6.1. bonds
+region_name = "world"
+database_name_in = "world_fin_db"
+print("Creating tables for region: ", region_name, "; 6/6")
+print("Running in...")
+for secs_left in range(5,0,-1):
+    print(str(secs_left), " second(s)...")
+    time.sleep(1)
+category_name = "bonds"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.2. commodities
+category_name = "commodities"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.3. currencies_major
+category_name = "currencies_major"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.4. currencies_minor
+category_name = "currencies_minor"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.5. indices
+category_name = "indices"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.6. lme
+category_name = "lme"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.7. money_market
+category_name = "money_market"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
+# 3.6.8. stooq_stock_indices
+category_name = "stooq_stocks_indices"
+print("\t\tCategory: ", category_name)
+print("\t\tRunning in...")
+for secs_left in range(3,0,-1):
+    print("\t\t\t", str(secs_left), " second(s)...")
+    time.sleep(1)
+create_data_tables_in_mysql_server(region_name, category_name,
+                                   database_name_in, connection_dict_in)
 
 
 
@@ -267,165 +511,3 @@ print("\n")
 ################################################################################
 ################################################################################
 ################################################################################
-### two main functions:
-#
-#
-# # connection_dictionary = {'user': 'fin_db_client', 'password': 'test1234',
-# #                    'host': '127.0.0.1', 'database': 'hk_fin_db'}
-#
-# # 1) create_table_in_MySQL_Server
-# def create_tables_in_mysql_server(list_of_tables_names, connection_dictionary):
-#     # 1. establish the connection
-#     cnx_to_server = mysql.connector.connect(connection_dictionary)
-#     # 2. create tables in a loop:
-#     for iter_table_name in list_of_tables_names:
-#         # create a temp cursor
-#         temp_cursor = cnx_to_server.cursor()
-#         temp_query = (
-#             "CREATE TABLE " + str(iter_table_name) + " ("
-#             "   Symbol      varchar(50)     NOT NULL,     "
-#             "   Name        varchar(50)     NOT NULL     "
-#             ") ENGINE=InnoDB")
-#         print("Executing query: ", temp_query)
-#         temp_cursor.execute(temp_query)
-#         # close the temp_cursor
-#         temp_cursor.close()
-#     # 3. close the cursor and terminate the connection
-#     cnx_to_server.close()
-#
-# # test the function create_table_in_mysql_server()
-# connection_dictionary = {
-#     'user': 'fin_db_client',
-#     'password': 'test1234',
-#     'host': '127.0.0.1',
-#     'database': 'hk_fin_db'
-# }
-#
-#
-#
-# create_tables_in_mysql_server(list_of_tables_names, connection_dictionary)
-#
-# # 2) populate_table_in_MySQL_Server
-# def populate_tables_in_mysql_server(dict_of_tables, connection_dictionary):
-#
-#     # 1. establish the connection
-#
-#     # 2.
-#
-#
-#
-# ### 1. Loading data dictionaries to the database
-#
-#
-# ### 2. Loading the data to the database
-#
-#
-#
-#
-# # 1.5. Load the dictionaries into the MySQL DB
-#
-# # 1.5.1. loop through the dictionary of tickers dictionaries and create
-# # tables for them in the DB
-#
-# # 1.5.1.1. prepare commands
-# dict_of_queries = {}
-# for my_iter in dict_of_tickers_dicts.keys():
-#     # save the query in dictionary
-# # 1.5.1.2. execute commands
-# for my_iter in dict_of_tickers_dicts.keys():
-#     temp_query = dict_of_queries[my_iter]
-#     cnx1 = mysql.connector.connect(user="wegar", password="test1234",
-#                               host="127.0.0.1",
-#                               database="financial_mdb")
-#
-# # 1.5.2. loop through the dictionaries of tickers dictionaries and
-# # load them into the previously prepared tables in DB
-# # 1.5.2.1. function that populates indicated table with values from a specified DataFrame
-# def populate_MySQL_table(connection_dict, df_in, table_name):
-#     # dsiplay info on what is happening...
-#     print("\n\n")
-#     print("##########################################################")
-#     print("##########################################################")
-#     print("Populating rows of dictionary table : ", table_name)
-#     print("##########################################################")
-#     # main body of the command
-#     command1_body = "INSERT INTO " + table_name + "(Symbol, Name) VALUES "
-#     # open the connection
-#     my_con1 = mysql.connector.connect(**connection_dict)
-#     # create a cursor
-#     my_cur1 = my_con1.cursor()
-#     # open connection
-#     temp_cnx = mysql.connector.connect(**connection_dict)
-#     # loop through the elements of the dictionary and add insert them into DB tables
-#     # open cursor
-#     temp_cursor = temp_cnx.cursor()
-#     for k in range(len(df_in)):
-#         command1_values = " ( '" + df_in.loc[k, 'Symbol'] + "' , '" + df_in.loc[k, 'Name'] + "' ) "
-#         command1 = command1_body + command1_values
-#         # print the command
-#         print("Executing: ", command1)
-#         # execute the created command
-#         my_cur1.execute(command1)
-#         my_con1.commit()
-#     # display information on the status
-#     print("Finished populating table: ", table_name)
-#     print("Moving on...")
-#     # close cursor
-#     temp_cursor.close()
-#     # close the connection to DB
-#     temp_cnx.close()
-#
-# # sample function parameters
-# # connection_dict = {'user': 'wegar', 'password': 'test1234',
-# #                    'host': '127.0.0.1', 'database': 'financial_mdb'}
-# # table_name = list(dict_of_tickers_dicts.keys())[0]
-# # df_in = dict_of_tickers_dicts[table_name]
-# # populate_MySQL_table(connection_dict, df_in, table_name)
-#
-# # 1.5.2.2. walk through the different ticker tables and populate them
-#
-# connection_dict = {'user': 'wegar', 'password': 'test1234',
-#                    'host': '127.0.0.1', 'database': 'financial_mdb'}
-#
-# # table_name = list(dict_of_tickers_dicts.keys())[0]
-# # df_in = dict_of_tickers_dicts[table_name]
-#
-# for k in range(len(list(dict_of_tickers_dicts.keys()))):
-#     # prepare parameters for the function populate_MySQL_table
-#     table_name = list(dict_of_tickers_dicts.keys())[k]
-#     df_in = dict_of_tickers_dicts[table_name]
-#     # execute the command that populates the tables
-#     populate_MySQL_table(connection_dict, df_in, table_name)
-#
-#
-# # 1.6. Walk through the elements of dictionaries to load the time series into the MySQL DB
-#
-# # one of the data dictionaries - choose first one in the row
-# i = 0
-# iter_dict = list(dict_of_tickers_dicts.keys())[i]
-# # prepare a list of all names that are in the dictionary
-# symbols_list = list(dict_of_tickers_dicts[iter_dict].loc[:, 'Symbol'])
-# # walk through the symbols list and load the data
-# for k in range(len(symbols_list)):
-#     # I. LOAD DATA INTO PYTHON
-#     # extract the symbol name
-#     iter_symbol = symbols_list[k]
-#     # EXTRACT CURRENT INSTRUMENT NAME
-#     # first occurrence of underscore in string
-#     first_underscore = iter_dict.find("_")
-#     # second occurrence of underscore in string
-#     second_underscore = iter_dict[(first_underscore+1):].find("_")
-#     iter_instrument_name = iter_dict[(first_underscore+1):(second_underscore+first_underscore+1)]
-#     # special treatment of currencies - 'majors' and 'minors'
-#     if iter_instrument_name == "currencies":
-#         # add 'major'/'minor'
-#         residual_of_iter_dict = iter_dict[(second_underscore + first_underscore + 2):]
-#         residual_first_underscore = residual_of_iter_dict.find('_')
-#         currency_identifier = residual_of_iter_dict[0:residual_first_underscore]
-#         iter_instrument_name = iter_instrument_name + currency_identifier
-#     else:
-#         pass
-#     # prepare directory to the data
-#     iter_directory_to_data = data_root_dir + "data_world/" + iter_instrument_name + "/" + iter_symbol.lower() + ".txt"
-#     df_iter = pd.read_csv(iter_directory_to_data, parse_dates=[0], usecols=['Date', 'Close'])
-#     # II. prepare a table for the data in the MySQL DB
