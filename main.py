@@ -11,6 +11,9 @@
 #############################    I. IMPORTS    #################################
 ################################################################################
 import os
+import mysql.connector
+import mysql.connector.errorcode as err_cd
+import time
 
 
 
@@ -66,6 +69,39 @@ if __name__ == "__main__":
     print("##### Current directory: ", os.getcwd())
     print("####################################################################")
     print("####################################################################")
+    # 0. Preparatory changes - creation of databases in the MySQL Server
+    print("Creating databases in the MySQL Server - type in root user password:")
+    os.system('./prepare_MySQL_Server')
+    print("Check connection in...")
+    for secs_left in range(3,0,-1):
+        print(secs_left, " second(s)...")
+        time.sleep(1)
+    try:
+        test_cnx = mysql.connector.connect(user="fin_db_client",
+                                           password="test1234",
+                                           host="127.0.0.1",
+                                           database="world_fin_db"
+                                           )
+    except mysql.connector.Error as err:
+        if err.errno == err_cd.ER_ACCESS_DENIED_ERROR:
+            print("Connection test: failed")
+            print("Access denied error.")
+            print("Something is wrong with user name and/or password. ")
+        elif err.errno == err_cd.ER_BAD_DB_ERROR:
+            print("Connection test: failed")
+            print("Database error when tryinh to connect. ")
+            print("The database you are trying to connect to may not exist. ")
+        else:
+            print("Connection test: failed")
+            print("Neither user/password nor access error; ")
+            print("Error message: ")
+            print(err)
+    else:
+        # the code below is executed if the "try" block does
+        # not raise an exception
+        test_cnx.close()
+        print("Connection test: success")
+
     # 1. Preprocessing of the downloaded data
     os.system('python3 Stooq_data_preprocessing.py')
     print("####################################################################")
