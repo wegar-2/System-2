@@ -112,4 +112,4 @@ if __name__ == "__main__":
     print("####################################################################")
     print("####################################################################")
     # 2. Data load into MySQL Server
-    os.system('python3 load_data_to_MySQL.py')
+    # os.system('python3 load_data_to_MySQL.py')
