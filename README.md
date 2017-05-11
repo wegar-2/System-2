@@ -8,14 +8,15 @@
         c) simulational VaR
 
 Programming languages: Python, SQL
+
 Software: MySQL for DB
 
-## General remarks
+## 2. General remarks
 2.0 The central script is the script main.py which should contain description of all the steps that are necessary to get the system to work.
 2.1. Before the script main.py is run, all the steps that are described in it should be CAREFULLY carried out.
 2.2. Make sure to keep the main.py the file that is able to proceed uninterrupted if all the requirements described in it are satisfied.
 
-## WARNING: currently the main.py script is not runnable!!! ###
+#### WARNING: currently the main.py script is not runnable!!! ###
 
 ## 3. Do your best to abide by "one commit per logical change principle."
 
