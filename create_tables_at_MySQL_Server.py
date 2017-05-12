@@ -163,8 +163,8 @@ connection_dict_in = {
 }
 database_name_in = "DATA_DICTS_DB"
 table_columns_dict_in = {
-    "Symbol": "varchar(40)",
-    "Name": "varchar(40)"
+    "Symbol": "varchar(255)",
+    "Name": "varchar(255)"
 }
 print("\n")
 print("#######################################################################")
