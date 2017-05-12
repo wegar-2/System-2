@@ -52,10 +52,10 @@ for secs_left in range(3,0,-1):
     print(secs_left, "second(s)...")
 try:
     test_cnx = mysql.connector.connect(
-        user="fin_db_client",
+        user="FIN_DB_CLIENT",
         password="test1234",
         host="127.0.0.1",
-        database="pl_fin_db"
+        database="PL_FIN_DB"
     )
 # catch error in mysql.connector.Error
 except mysql.connector.Error as err:
@@ -100,6 +100,7 @@ def create_table_mysql_server(table_name, database_name,
         string_to_append = string_to_append + "\n"
         temp_command = temp_command + string_to_append
     temp_command = temp_command + ");"
+    temp_command = temp_command.upper()
     # 4. execute the command
     # print("Executing command: ")
     # print(temp_command)
@@ -155,12 +156,12 @@ def create_data_tables_in_mysql_server(region_name, category_name,
 ################################################################################
 # 2.0. prepare arguments for the create_table_mysql_server() function
 connection_dict_in = {
-    'user': 'fin_db_client',
+    'user': 'FIN_DB_CLIENT',
     'password': 'test1234',
     'host': '127.0.0.1',
-    'database': 'data_dicts_db'
+    'database': 'DATA_DICTS_DB'
 }
-database_name_in = "data_dicts_db"
+database_name_in = "DATA_DICTS_DB"
 table_columns_dict_in = {
     "Symbol": "varchar(40)",
     "Name": "varchar(40)"
@@ -172,15 +173,14 @@ print("#######################################################################")
 print("\n")
 
 # list of regions in the database
-regions_list = \
-    [
+regions_list = [
         'de',
         'hk',
         'jp',
         'pl',
         'us',
         'world'
-    ]
+]
 # list of lists ofcategories for different regions
 categories_list_of_lists = [
     # de
@@ -264,14 +264,14 @@ os.chdir(os.getcwd()+"/Stooq_data_dictionaries")
 # new set of columns for tables with the times series
 table_columns_dict_in = {
     "Date": "date",
-    "Close": "float(14,4)"
+    "Close": "float(12,4)"
 }
 
 # loop through keys of the dict_regions_to_categories
 for iter_key_region in dict_regions_to_categories.keys():
     print("Region: ", str(iter_key_region))
-    database_name_in = str(iter_key_region) + "_fin_db"
-    connection_dict_in['database'] = database_name_in
+    database_name_in = str(iter_key_region).upper() + "_FIN_DB"
+    connection_dict_in['database'] = database_name_in.upper()
     # for each key loop through the list to which its pointing
     for iter_value_category in dict_regions_to_categories[iter_key_region]:
         print("\tCategory: ", str(iter_value_category))

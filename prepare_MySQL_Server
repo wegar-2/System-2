@@ -8,29 +8,29 @@ MYSQL=`which mysql`
 Q0="use mysql;"
 
 # create a client user
-Q1="create user 'fin_db_client'@'localhost' identified by 'test1234';"
+Q1="create user 'FIN_DB_CLIENT'@'localhost' identified by 'test1234';"
 
 # create databases in which the data will be stored
-Q001="create database if not exists hk_fin_db;"
-Q002="create database if not exists macro_fin_db;"
-Q003="create database if not exists us_fin_db;"
-Q004="create database if not exists jp_fin_db;"
-Q005="create database if not exists pl_fin_db;"
-Q006="create database if not exists de_fin_db;"
-Q007="create database if not exists world_fin_db;"
-Q008="create database if not exists app_users_db;"
-Q009="create database if not exists data_dicts_db;"
+Q001="create database if not exists HK_FIN_DB;"
+Q002="create database if not exists MACRO_FIN_DB;"
+Q003="create database if not exists US_FIN_DB;"
+Q004="create database if not exists JP_FIN_DB;"
+Q005="create database if not exists PL_FIN_DB;"
+Q006="create database if not exists DE_FIN_DB;"
+Q007="create database if not exists WORLD_FIN_DB;"
+Q008="create database if not exists APP_USERS_DB;"
+Q009="create database if not exists DATA_DICTS_DB;"
 
 # grant access privileges to the user on the databases
-Q101="grant all privileges on hk_fin_db.* to 'fin_db_client'@'localhost';"
-Q102="grant all privileges on macro_fin_db.* to 'fin_db_client'@'localhost';"
-Q103="grant all privileges on us_fin_db.* to 'fin_db_client'@'localhost';"
-Q104="grant all privileges on jp_fin_db.* to 'fin_db_client'@'localhost';"
-Q105="grant all privileges on pl_fin_db.* to 'fin_db_client'@'localhost';"
-Q106="grant all privileges on de_fin_db.* to 'fin_db_client'@'localhost';"
-Q107="grant all privileges on world_fin_db.* to 'fin_db_client'@'localhost';"
-Q108="grant all privileges on app_users_db.* to 'fin_db_client'@'localhost';"
-Q109="grant all privileges on data_dicts_db.* to 'fin_db_client'@'localhost';"
+Q101="grant all privileges on HK_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q102="grant all privileges on MACRO_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q103="grant all privileges on US_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q104="grant all privileges on JP_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q105="grant all privileges on PL_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q106="grant all privileges on DE_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q107="grant all privileges on WORLD_FIN_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q108="grant all privileges on APP_USERS_DB.* to 'FIN_DB_CLIENT'@'localhost';"
+Q109="grant all privileges on DATA_DICTS_DB.* to 'FIN_DB_CLIENT'@'localhost';"
 Q110="flush privileges;"
 
 # make the query
