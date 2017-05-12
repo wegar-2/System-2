@@ -130,11 +130,11 @@ dict_regions_to_categories = dict(zip(regions_list, categories_list_of_lists))
 # 1.0. helper function to patrse ticker symbol
 def parse_ticker_symbol(symbol_to_parse):
     # changing "." ===> "_" in the list of symbols
-    symbol_to_parse.replace(".", "_")
+    symbol_to_parse = symbol_to_parse.replace(".", "_")
     # changing "^" ===> "hat_" in the list of symbols
-    symbol_to_parse.replace("^", "hat_")
+    symbol_to_parse = symbol_to_parse.replace("^", "hat_")
     # changing "-" ===> "_dash_" in the list of symbols
-    symbol_to_parse.replace("-", "_dash_")
+    symbol_to_parse = symbol_to_parse.replace("-", "_dash_")
     return symbol_to_parse
 
 
@@ -151,6 +151,8 @@ def upload_datadict_dataframe_to_mysql_server(dataframe_in, target_table,
         temp_command = "INSERT INTO " + target_table + "(NAME, SYMBOL) VALUES ("
         # values to be inserted
         iter_name_val = str(df_iterator['Name'])
+        # dropping single quotes from the instrument name
+        iter_name_val = iter_name_val.replace("'", "")
         iter_symbol_val = str(df_iterator['Symbol'])
         # parse ticker symbol: replacement of special characeters
         iter_symbol_val = parse_ticker_symbol(iter_symbol_val)
@@ -159,6 +161,7 @@ def upload_datadict_dataframe_to_mysql_server(dataframe_in, target_table,
         # ensure all is uppercase
         temp_command = temp_command.upper()
         # execute the command for iteration
+        print(temp_command)
         temp_cursor.execute(temp_command)
     # 2.2. commit the inserts
     temp_cnx.commit()
@@ -191,25 +194,6 @@ def upload_data_dataframe_to_mysql_server(dataframe_in, target_table,
     temp_cursor.close()
     temp_cnx.close()
 
-
-# test_file_dir = "/home/wegar/github_repos/financial_data/Stooq_daily_data/de/xetra_stocks/zo1.de.txt"
-# df_loaded = pd.read_csv(test_file_dir, parse_dates=[0], usecols=['Date', 'Close'])
-# sample_dataframe_in = df_loaded
-# sample_target_table = "zo1_de"
-# sample_connection_dictionary = {
-#     'user': 'FIN_DB_CLIENT',
-#     'password': 'test1234',
-#     'host': '127.0.0.1',
-#     'database': 'DE_FIN_DB'
-# }
-#
-# #test run
-# time_start = time.perf_counter()
-# upload_dataframe_to_mysql_server(dataframe_in=sample_dataframe_in,
-#                                  target_table=sample_target_table,
-#                                  connection_dictionary=sample_connection_dictionary)
-# time_end = time.perf_counter()
-# print("Time passed: ", str(time_end - time_start))
 
 ################################################################################
 # 2. Loading the data dictionaries to the MySQL Server database "data_dicts_db"#
@@ -252,54 +236,83 @@ print("####### Finished loading data dictionaries to the server ...  #########")
 print("#######################################################################")
 
 
-###############################################################################
-###############################################################################
-########### 3. Loading the data into databases "XXX_fin_db"  ##################
-###############################################################################
-###############################################################################
-#
-# print("#######################################################################")
-# print("###########  Loading data dictionaries to the server ...  #############")
-# print("#######################################################################")
-#
-#
-#
-#
-# print("#######################################################################")
-# print("####### Finished loading data dictionaries to the server ...  #########")
-# print("#######################################################################")
+##############################################################################
+##############################################################################
+########## 3. Loading the data into databases "XXX_fin_db"  ##################
+##############################################################################
+##############################################################################
 
-#
-# ################################################################################
-# ################################################################################
-# ################################################################################
-# ################################################################################
-# ################################################################################
-# ################################################################################
-#
-# # test load of a data table
-# test_csv_dir = "/home/wegar/github_repos/financial_data/Stooq_daily_data/de/xetra_stocks/zo1.de.txt"
-# df_loaded = pd.read_csv(test_csv_dir, usecols=['Date', 'Close'], parse_dates=[0])
-#
-# # check data types in the dataframe:
-# for iter_col_name in df_loaded.columns:
-#     print(type(df_loaded.loc[0, iter_col_name]))
-#     isinstance(df_loaded.loc[0, iter_col_name], np.float64)
-#
-# # test load of a dictionary table
-# test_datadict_csv_dir = "/home/wegar/github_repos/financial_data/Stooq_data_dictionaries/de/xetra_stocks.csv"
-# temp_datadict_df = pd.read_csv(test_datadict_csv_dir, index_col=0)
-#
-# sample_dataframe_in = temp_datadict_df
-# sample_target_table = 'XETRA_STOCKS'
-# sample_connection_dictionary = {
-#     'user': 'FIN_DB_CLIENT',
-#     'password': 'test1234',
-#     'host': '127.0.0.1',
-#     'database': 'DATA_DICTS_DB'
-# }
-#
-# upload_datadict_dataframe_to_mysql_server(dataframe_in=sample_dataframe_in,
-#                                           target_table=sample_target_table,
-#                                           connection_dictionary=
-#                                           sample_connection_dictionary)
+print("#######################################################################")
+print("##############  Loading time series to the server ...  ################")
+print("#######################################################################")
+
+
+# current directory is assumed to be .../financial_data/.
+print("\n\n\n")
+print("os.getcwd(): ", os.getcwd())
+print("\n\n\n")
+
+data_connect_dict = {
+    'user': 'FIND_DB_CLIENT',
+}
+
+################################################################################
+###########################    REGION-level loop    ############################
+################################################################################
+for iter_key_region in dict_regions_to_categories.keys():
+    print("\n\n\n\n\n")
+    print("Data load for region: ", str(iter_key_region))
+    for secs_left in range(5,0,-1):
+        print(str(secs_left), "second(s) to start...")
+        time.sleep(1)
+    ############################################################################
+    ################    CATEGORY-level loop for a REGION    ####################
+    ############################################################################
+    for iter_reg_categ in dict_regions_to_categories[iter_key_region]:
+        print("\n")
+        print("Data load for region: ", str(iter_key_region), ", category: ",
+              str(iter_reg_categ))
+        for secs_left in range(3, 0, -1):
+            print(str(secs_left), "second(s) to start...")
+            time.sleep(1)
+        # prepare connection dictionary
+
+        # 1. load the data dictionary from csv file
+        data_dict_dir = os.getcwd() + "/Stooq_data_dictionaries/" + str(iter_key_region) + "/" + \
+                        str(iter_reg_categ) + ".csv"
+        current_data_dict = pd.read_csv(data_dict_dir)
+        print("Loaded data dictionary from: ", data_dict_dir)
+        # add column with parsed names (names that are consistent with database
+        print("Category: ", str(iter_reg_categ))
+        # prepare root of the directory to dataframes with data
+        temp_df_dir_root = os.getcwd() + "/Stooq_data_dictionaries/" + \
+                      str(iter_reg_categ) + "/" + str(iter_reg_categ) + "/"
+        # iterate through the loaded data dictionary and load data
+        for iter_index, iter_vals in current_data_dict.iterrows():
+            # make full dir to data
+            temp_df_dir = temp_df_dir_root + str(iter_vals['Symbol'])
+            # load the data from a dataframe
+            temp_df_in = pd.read_csv(temp_df_dir, parse_dates=[0],
+                                     usecols=['Date', 'Close'])
+            # target_table - parse symbol...
+            temp_target_table = parse_ticker_symbol(iter_vals['Symbol'])
+            # call the loader function
+            upload_data_dataframe_to_mysql_server(dataframe_in=temp_df_in,
+                                                  target_table=temp_target_table,
+                                                  connection_dictionary=
+                                                  data_connect_dict
+                                                  )
+
+
+
+print("#######################################################################")
+print("########## Finished loading time series to the server ...  ############")
+print("#######################################################################")
+
+
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
