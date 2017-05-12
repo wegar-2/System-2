@@ -447,6 +447,7 @@ def prepare_data_dictionaries(region_name, region_categories,
     print("Inside function prepare_data_dictionaries()...")
     print("Argument - region_name: ", region_name)
 
+    region_list_of_categories = []
     region_list_of_dictionaries = []
 
     for key_iter in region_categories_dict_url.keys():
@@ -462,11 +463,12 @@ def prepare_data_dictionaries(region_name, region_categories,
         temp_dict = pd.read_table(temp_url)
         temp_dict = parse_stooq_dict(temp_dict)
         # add the dictionary to the list world_list_of_dictionaries
+        region_list_of_categories.append(str(key_iter))
         region_list_of_dictionaries.append(temp_dict)
 
     # dictionary of dictionaries
     region_dict_of_dicts = dict(
-        zip(region_categories, region_list_of_dictionaries))
+        zip(region_list_of_categories, region_list_of_dictionaries))
 
     # save data dictionaries to /financial_data/Stooq_data_dictionaries/world
     # directory
