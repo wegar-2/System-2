@@ -5,13 +5,13 @@
 
 # imports
 import pandas as pd
+import pandas.errors
 import mysql.connector
 import mysql.connector.errorcode as err_cd
 import os
 import time
 import sys
 import progress.bar
-import numpy as np
 import datetime
 
 print("##################################################################")
@@ -54,10 +54,10 @@ for secs_left in range(3,0,-1):
     print(secs_left, "second(s)...")
 try:
     test_cnx = mysql.connector.connect(
-        user="fin_db_client",
+        user="FIN_DB_CLIENT",
         password="test1234",
         host="127.0.0.1",
-        database="pl_fin_db"
+        database="PL_FIN_DB"
     )
 # catch error in mysql.connector.Error
 except mysql.connector.Error as err:
@@ -66,10 +66,12 @@ except mysql.connector.Error as err:
         print("User name/password related error...")
     elif err.errno == err_cd.ER_BAD_DB_ERROR:
         print()
+    sys.exit()
 else:
     # executed if there is no error in the 'try' block
     print("Connection attempt: success!")
     test_cnx.close()
+
 
 
 regions_list = [
@@ -247,13 +249,33 @@ print("##############  Loading time series to the server ...  ################")
 print("#######################################################################")
 
 
+regions_list = [
+        'jp'
+
+]
+# list of lists ofcategories for different regions
+categories_list_of_lists = [
+    # jp
+    [
+        #'tse_futures',
+        'tse_indices',
+        'tse_stocks'
+    ]
+]
+dict_regions_to_categories = dict(zip(regions_list, categories_list_of_lists))
+
+
+
 # current directory is assumed to be .../financial_data/.
 print("\n\n\n")
 print("os.getcwd(): ", os.getcwd())
 print("\n\n\n")
 
 data_connect_dict = {
-    'user': 'FIND_DB_CLIENT',
+    "user": "FIN_DB_CLIENT",
+    "password": "test1234",
+    "host": "127.0.0.1",
+    "database": "HK_FIN_DB"
 }
 
 ################################################################################
@@ -265,6 +287,8 @@ for iter_key_region in dict_regions_to_categories.keys():
     for secs_left in range(5,0,-1):
         print(str(secs_left), "second(s) to start...")
         time.sleep(1)
+    data_connect_dict['database'] = str(iter_key_region).upper() + "_FIN_DB"
+    print("Current database: ", str(data_connect_dict['database']))
     ############################################################################
     ################    CATEGORY-level loop for a REGION    ####################
     ############################################################################
@@ -281,29 +305,33 @@ for iter_key_region in dict_regions_to_categories.keys():
         data_dict_dir = os.getcwd() + "/Stooq_data_dictionaries/" + str(iter_key_region) + "/" + \
                         str(iter_reg_categ) + ".csv"
         current_data_dict = pd.read_csv(data_dict_dir)
+        print("current_data_dict.head(): ")
+        print(current_data_dict.head())
         print("Loaded data dictionary from: ", data_dict_dir)
         # add column with parsed names (names that are consistent with database
         print("Category: ", str(iter_reg_categ))
         # prepare root of the directory to dataframes with data
-        temp_df_dir_root = os.getcwd() + "/Stooq_data_dictionaries/" + \
-                      str(iter_reg_categ) + "/" + str(iter_reg_categ) + "/"
+        temp_df_dir_root = os.getcwd() + "/Stooq_daily_data/" + \
+                      str(iter_key_region) + "/" + str(iter_reg_categ) + "/"
         # iterate through the loaded data dictionary and load data
         for iter_index, iter_vals in current_data_dict.iterrows():
             # make full dir to data
-            temp_df_dir = temp_df_dir_root + str(iter_vals['Symbol'])
-            # load the data from a dataframe
-            temp_df_in = pd.read_csv(temp_df_dir, parse_dates=[0],
+            temp_df_dir = temp_df_dir_root + str(iter_vals['Symbol']).lower() + ".txt"
+            # load the data from a dataframe; handling of empty dataframe case
+            try:
+                temp_df_in = pd.read_csv(temp_df_dir, parse_dates=[0],
                                      usecols=['Date', 'Close'])
-            # target_table - parse symbol...
-            temp_target_table = parse_ticker_symbol(iter_vals['Symbol'])
-            # call the loader function
-            upload_data_dataframe_to_mysql_server(dataframe_in=temp_df_in,
-                                                  target_table=temp_target_table,
-                                                  connection_dictionary=
-                                                  data_connect_dict
-                                                  )
-
-
+                # target_table - parse symbol...
+                temp_target_table = parse_ticker_symbol(iter_vals['Symbol'])
+                print("Loading: ", temp_target_table)
+                # call the loader function
+                upload_data_dataframe_to_mysql_server(dataframe_in=temp_df_in,
+                                                      target_table=temp_target_table,
+                                                      connection_dictionary=
+                                                      data_connect_dict
+                                                      )
+            except pandas.errors.EmptyDataError:
+                pass
 
 print("#######################################################################")
 print("########## Finished loading time series to the server ...  ############")
